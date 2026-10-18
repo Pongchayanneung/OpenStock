@@ -110,7 +110,7 @@ export default function HelpPage() {
   );
 }
 
-function HelpCard({ icon, title, desc, link, linkText }: any) {
+function HelpCard({ icon, title, desc, link, linkText }: { icon: React.ReactNode; title: string; desc: string; link: string; linkText: string }) {
   return (
     <div className="bg-gray-900 border border-gray-800 p-6 rounded-xl flex flex-col items-start hover:border-gray-700 transition-colors">
       <div className="mb-4 bg-gray-800 p-2 rounded-lg">{icon}</div>

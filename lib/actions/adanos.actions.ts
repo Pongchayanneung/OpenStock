@@ -1,4 +1,5 @@
 'use server';
+import { requireUserId, validateSymbol } from '@/lib/better-auth/session';
 
 import {
     buildStockSentimentInsights,
@@ -69,12 +70,15 @@ export async function getStockSentimentInsights(
     symbol: string,
     days: number = DEFAULT_LOOKBACK_DAYS,
 ): Promise<StockSentimentInsights | null> {
-    if (!getAdanosApiKey() || !symbol?.trim()) {
+    await requireUserId();
+    if (!Number.isFinite(days)) throw new Error('Invalid lookback days');
+    if (typeof symbol !== 'string') throw new Error('Invalid stock symbol');
+    if (!getAdanosApiKey() || !symbol.trim()) {
         return null;
     }
 
-    const normalizedSymbol = symbol.trim().toUpperCase();
-    const lookbackDays = Math.max(1, Math.min(days, 30));
+    const normalizedSymbol = validateSymbol(symbol.trim());
+    const lookbackDays = Math.max(1, Math.min(Math.floor(days), 30));
     const sourceKeys = Object.keys(SOURCE_CONFIG) as SentimentSourceKey[];
 
     const sources = await Promise.all(

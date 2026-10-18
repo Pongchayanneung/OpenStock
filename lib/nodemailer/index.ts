@@ -1,6 +1,14 @@
 import nodemailer from 'nodemailer';
 import { WELCOME_EMAIL_TEMPLATE, NEWS_SUMMARY_EMAIL_TEMPLATE } from "@/lib/nodemailer/templates";
 
+export const escapeHtml = (value: string) =>
+    value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
 type EmailSendResult =
     | { status: 'skipped' }
     | { status: 'sent'; messageId: string };
@@ -25,16 +33,6 @@ export const transporter = hasEmailConfig
     })
     : null;
 
-if (transporter) {
-    transporter.verify((error) => {
-        if (error) {
-            console.error('❌ Nodemailer transporter verification failed:', error);
-        } else {
-            console.log('✅ Nodemailer transporter is ready to send emails');
-        }
-    });
-}
-
 export const sendWelcomeEmail = async ({ email, name, intro }: WelcomeEmailData) => {
     try {
         if (!transporter) {
@@ -43,8 +41,8 @@ export const sendWelcomeEmail = async ({ email, name, intro }: WelcomeEmailData)
         }
 
         const htmlTemplate = WELCOME_EMAIL_TEMPLATE
-            .replace('{{name}}', name)
-            .replace('{{intro}}', intro);
+            .replace('{{name}}', () => escapeHtml(name))
+            .replace('{{intro}}', () => escapeHtml(intro));
 
         const mailOptions = {
             from: `"Openstock" <${process.env.NODEMAILER_EMAIL}>`,
@@ -92,3 +90,13 @@ export const sendNewsSummaryEmail = async (
         throw error;
     }
 };
+
+export async function sendNotification(email: string, subject: string, text: string, messageId?: string) {
+    if (!transporter) throw new Error('Email credentials not configured');
+    const result = await transporter.sendMail({
+        from: `"OpenStock" <${process.env.NODEMAILER_EMAIL}>`, to: email,
+        subject, text, ...(messageId ? { messageId } : {}),
+    });
+    if (!result.accepted?.length || result.rejected?.length) throw new Error('Email recipient not accepted');
+    return result.messageId;
+}

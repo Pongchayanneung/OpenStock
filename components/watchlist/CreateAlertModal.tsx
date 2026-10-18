@@ -39,8 +39,7 @@ export default function CreateAlertModal({
 
     const [targetPrice, setTargetPrice] = useState<string>(currentPrice.toString());
     const [condition, setCondition] = useState<"ABOVE" | "BELOW">("ABOVE");
-    const [alertName, setAlertName] = useState("");
-    const [loading, setLoading] = useState(false);
+        const [loading, setLoading] = useState(false);
 
     // Update target price when currentPrice changes (e.g. freshly fetched)
     React.useEffect(() => {
@@ -81,17 +80,6 @@ export default function CreateAlertModal({
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-5 py-2 relative z-10">
 
-                    {/* Alert Name */}
-                    <div className="grid gap-2">
-                        <Label className="text-gray-400 text-sm font-medium">Alert Name</Label>
-                        <Input
-                            value={alertName}
-                            onChange={(e) => setAlertName(e.target.value)}
-                            placeholder="e.g. Apple at Discount"
-                            className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-600 focus:border-yellow-500 focus:ring-yellow-500/20 transition-all rounded-md h-10"
-                        />
-                    </div>
-
                     {/* Stock Identifier */}
                     <div className="grid gap-2">
                         <Label className="text-gray-400 text-sm font-medium">Stock identifier</Label>
@@ -120,8 +108,8 @@ export default function CreateAlertModal({
                     {/* Condition */}
                     <div className="grid gap-2">
                         <Label className="text-gray-400 text-sm font-medium">Condition</Label>
-                        <Select value={condition} onValueChange={(val: any) => setCondition(val)}>
-                            <SelectTrigger className="bg-[#1C1C1F] border-gray-800 text-gray-200 hover:border-gray-700 transition-colors">
+                        <Select value={condition} onValueChange={val => { if (val === 'ABOVE' || val === 'BELOW') setCondition(val); }}>
+                            <SelectTrigger aria-label="Alert condition" className="bg-[#1C1C1F] border-gray-800 text-gray-200 hover:border-gray-700 transition-colors">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent className="bg-[#1C1C1F] border-gray-800 text-gray-200">
@@ -133,10 +121,13 @@ export default function CreateAlertModal({
 
                     {/* Threshold Value */}
                     <div className="grid gap-2">
-                        <Label className="text-gray-400 text-sm font-medium">Threshold value</Label>
+                        <Label htmlFor="alert-threshold" className="text-gray-400 text-sm font-medium">Threshold value</Label>
                         <div className="relative">
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-yellow-500 font-semibold">$</span>
                             <Input
+                                id="alert-threshold"
+                                min="0.01"
+                                required
                                 type="number"
                                 step="0.01"
                                 value={targetPrice}

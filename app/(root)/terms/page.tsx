@@ -45,7 +45,7 @@ export default function TermsPage() {
               <h3 className="text-xl font-bold text-yellow-100 mb-2">Investment Disclaimer</h3>
               <p className="text-yellow-200/80 leading-relaxed">
                 **OpenStock is an educational and analysis tool, not a financial advisor.**
-                Data is provided "as is" for informational purposes. Never invest money you cannot afford to lose.
+                Data is provided &quot;as is&quot; for informational purposes. Never invest money you cannot afford to lose.
                 Always conduct your own research or consult a certified professional before making financial decisions.
               </p>
             </div>
@@ -57,7 +57,7 @@ export default function TermsPage() {
           <h2 className="text-2xl font-bold text-white mb-6">Community Rules</h2>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-gray-900 border border-gray-800 p-6 rounded-xl">
-              <h3 className="text-lg font-semibold text-blue-400 mb-4">✅ Do's</h3>
+              <h3 className="text-lg font-semibold text-blue-400 mb-4">✅ Do&apos;s</h3>
               <ul className="space-y-3 text-gray-400">
                 <li className="flex gap-2"><Check size={16} className="text-blue-500 mt-1" /> Share knowledge freely</li>
                 <li className="flex gap-2"><Check size={16} className="text-blue-500 mt-1" /> Use API for personal projects</li>
@@ -65,7 +65,7 @@ export default function TermsPage() {
               </ul>
             </div>
             <div className="bg-gray-900 border border-gray-800 p-6 rounded-xl">
-              <h3 className="text-lg font-semibold text-red-400 mb-4">❌ Don'ts</h3>
+              <h3 className="text-lg font-semibold text-red-400 mb-4">❌ Don&apos;ts</h3>
               <ul className="space-y-3 text-gray-400">
                 <li className="flex gap-2"><span className="text-red-500 font-bold">×</span> Scrape data excessively</li>
                 <li className="flex gap-2"><span className="text-red-500 font-bold">×</span> Share API keys</li>

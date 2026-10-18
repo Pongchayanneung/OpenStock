@@ -73,7 +73,7 @@ export default function DonatePopup() {
                     </div>
                     <DialogDescription className="text-gray-400 text-base leading-relaxed pt-2">
                         Your overwhelming love for OpenStock and Open Dev Society has helped us grow, 
-                        but we're hitting Vercel's free tier limits. 
+                        but we&apos;re hitting Vercel&apos;s free tier limits. 
                         <br /><br />
                         Help us keep OpenStock free and accessible for everyone by supporting us on GitHub Sponsors. 
                         Every contribution, no matter how small, makes a difference! 💙
@@ -98,7 +98,7 @@ export default function DonatePopup() {
                 </div>
 
                 <p className="text-xs text-gray-500 text-center mt-4">
-                    This popup won't appear again for 24 hours after dismissing
+                    This popup won&apos;t appear again for 24 hours after dismissing
                 </p>
             </DialogContent>
         </Dialog>

@@ -1,14 +1,14 @@
 'use server';
 
 import { auth } from "@/lib/better-auth/auth";
-import { inngest } from "@/lib/inngest/client";
+import { inngest, backgroundJobsEnabled } from "@/lib/inngest/client";
 import { headers } from "next/headers";
 
 export const signUpWithEmail = async ({ email, password, fullName, country, investmentGoals, riskTolerance, preferredIndustry }: SignUpFormData) => {
     try {
         const response = await auth.api.signUpEmail({ body: { email, password, name: fullName } })
 
-        if (response) {
+        if (response && backgroundJobsEnabled) {
             try {
                 console.log('📤 Sending Inngest event: app/user.created for', email);
                 await inngest.send({

@@ -7,10 +7,11 @@ import { ArrowUp, ArrowDown, Bell } from "lucide-react";
 import CreateAlertModal from "./CreateAlertModal";
 import WatchlistButton from "@/components/WatchlistButton";
 import { formatCurrency, formatNumber } from "@/lib/utils";
+import type { getWatchlistData } from '@/lib/actions/finnhub.actions';
 import { removeFromWatchlist } from "@/lib/actions/watchlist.actions";
 
 interface WatchlistTableProps {
-    data: any[];
+    data: Awaited<ReturnType<typeof getWatchlistData>>;
     userId: string;
     onRefresh?: () => void;
 }
@@ -34,7 +35,10 @@ export default function WatchlistTable({ data, userId, onRefresh }: WatchlistTab
 
                 // Dynamic import to avoid server-action issues if directly imported in client component sometimes
                 const { getWatchlistData } = await import('@/lib/actions/finnhub.actions');
-                const updatedData = await getWatchlistData(symbols);
+                const updatedData: Awaited<ReturnType<typeof getWatchlistData>> = [];
+                for (let offset = 0; offset < symbols.length; offset += 50) {
+                    updatedData.push(...await getWatchlistData(symbols.slice(offset, offset + 50)));
+                }
 
                 if (updatedData && updatedData.length > 0) {
                     setStocks(current => {
@@ -84,7 +88,7 @@ export default function WatchlistTable({ data, userId, onRefresh }: WatchlistTab
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
-                    {stocks.map((stock: any) => {
+                    {stocks.map((stock) => {
                         const isPositive = stock.change >= 0;
                         return (
                             <tr key={stock.symbol} className="hover:bg-white/5 transition-colors group">
@@ -124,7 +128,7 @@ export default function WatchlistTable({ data, userId, onRefresh }: WatchlistTab
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 text-gray-400 font-medium">
-                                    {formatNumber(stock.marketCap)}
+                                    {stock.marketCap === undefined ? 'Unavailable' : formatNumber(stock.marketCap)}
                                 </td>
                                 <td className="px-6 py-4 text-right">
                                     <div className="flex items-center justify-end space-x-3 opacity-80 group-hover:opacity-100 transition-opacity">
@@ -150,7 +154,7 @@ export default function WatchlistTable({ data, userId, onRefresh }: WatchlistTab
                                                     if (!added) {
                                                         await removeFromWatchlist(userId, sym);
                                                         // Update local list faster than full page refresh if you want
-                                                        setStocks((curr: any[]) => curr.filter((s: any) => s.symbol !== sym));
+                                                        setStocks((curr) => curr.filter((s) => s.symbol !== sym));
                                                         if (onRefresh) onRefresh();
                                                     }
                                                 }}

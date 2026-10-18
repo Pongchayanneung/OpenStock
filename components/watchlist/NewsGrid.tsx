@@ -6,7 +6,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ExternalLink } from "lucide-react";
 
 interface NewsGridProps {
-    news: any[];
+    news: MarketNewsArticle[];
 }
 
 export default function NewsGrid({ news }: NewsGridProps) {

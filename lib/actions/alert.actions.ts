@@ -1,8 +1,10 @@
 'use server';
 
 import { connectToDatabase } from '@/database/mongoose';
-import { Alert, type IAlert } from '@/database/models/alert.model';
+import { Alert } from '@/database/models/alert.model';
 import { revalidatePath } from 'next/cache';
+import { requireUserId, validateSymbol } from '@/lib/better-auth/session';
+import { isValidObjectId } from 'mongoose';
 
 // Create a new alert
 export async function createAlert(params: {
@@ -11,10 +13,13 @@ export async function createAlert(params: {
     targetPrice: number;
     condition: 'ABOVE' | 'BELOW';
 }) {
+    const userId = await requireUserId(params.userId);
+    const symbol = validateSymbol(params.symbol);
+    if (!Number.isFinite(params.targetPrice) || params.targetPrice <= 0 || !['ABOVE', 'BELOW'].includes(params.condition)) throw new Error('Invalid alert');
     try {
         await connectToDatabase();
         const newAlert = await Alert.create({
-            ...params,
+            userId, symbol, targetPrice: params.targetPrice, condition: params.condition,
             active: true,
             // expiresAt handled by default value in schema
         });
@@ -28,6 +33,7 @@ export async function createAlert(params: {
 
 // Get all alerts for a user
 export async function getUserAlerts(userId: string) {
+    userId = await requireUserId(userId);
     try {
         await connectToDatabase();
         const alerts = await Alert.find({ userId }).sort({ createdAt: -1 });
@@ -40,9 +46,12 @@ export async function getUserAlerts(userId: string) {
 
 // Delete an alert
 export async function deleteAlert(alertId: string) {
+    const userId = await requireUserId();
+    if (!isValidObjectId(alertId)) throw new Error('Invalid alert ID');
     try {
         await connectToDatabase();
-        await Alert.findByIdAndDelete(alertId);
+        const deleted = await Alert.findOneAndDelete({ _id: alertId, userId });
+        if (!deleted) throw new Error('Alert not found');
         revalidatePath('/watchlist');
         return { success: true };
     } catch (error) {
@@ -53,9 +62,12 @@ export async function deleteAlert(alertId: string) {
 
 // Toggle alert active status (optional utility)
 export async function toggleAlert(alertId: string, active: boolean) {
+    const userId = await requireUserId();
+    if (!isValidObjectId(alertId) || typeof active !== 'boolean') throw new Error('Invalid alert');
     try {
         await connectToDatabase();
-        await Alert.findByIdAndUpdate(alertId, { active });
+        const updated = await Alert.findOneAndUpdate({ _id: alertId, userId }, { active });
+        if (!updated) throw new Error('Alert not found');
         revalidatePath('/watchlist');
         return { success: true };
     } catch (error) {

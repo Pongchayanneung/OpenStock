@@ -1,3 +1,6 @@
+vi.mock('@/lib/better-auth/auth', () => ({ auth: { api: { getSession: async () => ({ user: { id: 'test' } }) } } }));
+vi.mock('next/headers', () => ({ headers: async () => new Headers() }));
+
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -209,4 +212,8 @@ describe('getStockSentimentInsights', () => {
 
         await expect(getStockSentimentInsights('TSLA')).resolves.toBeNull();
     });
+});
+
+it('rejects non-finite sentiment lookback before provider calls', async () => {
+    await expect(getStockSentimentInsights('AAPL', NaN)).rejects.toThrow('Invalid lookback days');
 });

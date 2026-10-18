@@ -33,12 +33,10 @@ export const getAuth = async () => {
             maxPasswordLength: 128,
             autoSignIn: true,
             sendResetPassword: async ({ user, url }) => {
-                void sendPasswordResetEmail({
+                await sendPasswordResetEmail({
                     email: user.email,
                     name: user.name,
                     resetUrl: url,
-                }).catch((error) => {
-                    console.error('Failed to queue password reset email:', error);
                 });
             },
         },

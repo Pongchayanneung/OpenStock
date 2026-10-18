@@ -45,7 +45,7 @@ export default function ApiDocsPage() {
 
         <div className="flex flex-wrap justify-center gap-3 pt-2">
           <Badge color="green">v1.0.0 Active</Badge>
-          <Badge color="purple">Gemini + Siray AI</Badge>
+          <Badge color="purple">Optional AI providers</Badge>
           <Badge color="blue">Open Source AGPL-3.0</Badge>
         </div>
       </section>
@@ -73,7 +73,7 @@ export default function ApiDocsPage() {
                   <span className="text-[10px] bg-teal-500/10 text-teal-400 px-2 py-0.5 rounded-full border border-teal-500/20">Flash Lite 2.5</span>
                 </h3>
                 <p className="text-sm text-gray-500 mt-1">
-                  Handles high-volume inference for news summarization and personalization.
+                  Optional news summarization and personalization after an AI key is configured.
                 </p>
               </div>
             </div>
@@ -86,11 +86,11 @@ export default function ApiDocsPage() {
               </div>
               <div>
                 <h3 className="text-white font-semibold flex items-center gap-2">
-                  Fallback: Siray.ai
+                  Configured fallback provider
                   <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/20">Ultra 1.0</span>
                 </h3>
                 <p className="text-sm text-gray-500 mt-1">
-                  Instant failover protection. If Gemini wavers, Siray takes over to ensure zero dropped requests.
+                  Fallback depends on configured provider keys. Provider failures remain possible.
                 </p>
               </div>
             </div>
@@ -111,12 +111,12 @@ export default function ApiDocsPage() {
               <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-1 h-12 bg-teal-500 rounded-full" />
               <span className="text-xs font-mono text-teal-500 mb-1">Inngest Function</span>
               <div className="flex items-center justify-between text-sm text-gray-200 bg-black/40 p-2 rounded border border-gray-700">
-                <span>Attempt Gemini</span>
+                <span>Attempt selected provider</span>
                 <CheckCircle2 size={14} className="text-teal-500" />
               </div>
               <div className="flex items-center justify-between text-sm text-gray-200 bg-blue-900/20 p-2 rounded border border-blue-800/50">
                 <span className="flex items-center gap-2">
-                  Fallback to Siray
+                  Try configured fallback
                   <ShieldCheck size={12} className="text-blue-400" />
                 </span>
                 <ArrowRight size={14} className="text-blue-400" />
@@ -156,14 +156,14 @@ export default function ApiDocsPage() {
             icon={<Clock size={20} />}
             title="Stock Alerts"
             trigger="Cron: 5m"
-            desc="Checks user price targets against real-time data."
+            desc="Checks price targets and sends individual notifications when email jobs are enabled."
             color="yellow"
           />
           <JobCard
             icon={<AlertTriangle size={20} />}
             title="Re-engagement"
             trigger="Cron: Daily"
-            desc="Identifies dormant users and sends nudges."
+            desc="Emails individual inactive users when email jobs are explicitly enabled."
             color="red"
           />
         </div>
@@ -214,8 +214,8 @@ function Badge({ children, color }: { children: React.ReactNode, color: 'green' 
   );
 }
 
-function JobCard({ icon, title, trigger, desc, color }: any) {
-  const colorClasses: any = {
+function JobCard({ icon, title, trigger, desc, color }: { icon: React.ReactNode; title: string; trigger: string; desc: string; color: string }) {
+  const colorClasses: Record<string, string> = {
     purple: 'text-purple-400 bg-purple-500/10 border-purple-500/20 hover:border-purple-500/40',
     teal: 'text-teal-400 bg-teal-500/10 border-teal-500/20 hover:border-teal-500/40',
     yellow: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20 hover:border-yellow-500/40',
@@ -232,7 +232,7 @@ function JobCard({ icon, title, trigger, desc, color }: any) {
   );
 }
 
-function StackItem({ title, desc, url }: any) {
+function StackItem({ title, desc, url }: { title: string; desc: string; url: string }) {
   return (
     <Link href={url} target="_blank" className="block group">
       <div className="bg-gray-800/40 hover:bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-gray-600 transition-all flex items-center justify-between">

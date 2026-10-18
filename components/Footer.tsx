@@ -19,7 +19,7 @@ const Footer = () => {
                             />
                         </Link>
                         <p className="text-gray-400 mb-6 max-w-md">
-                            OpenStock is an open-source alternative to expensive market platforms. Track real-time prices, set personalized alerts, and explore detailed company insights — built openly, for everyone, forever free.
+                            OpenStock is an open-source alternative to expensive market platforms. Track market prices, set personalized alerts, and explore detailed company insights — built openly, for everyone, forever free.
                         </p>
                         <div className="mb-8">
                             <Link href="/about" className="text-teal-400 hover:text-teal-300 font-medium inline-flex items-center gap-1 group">

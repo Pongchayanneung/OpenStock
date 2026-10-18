@@ -6,7 +6,7 @@ import { formatCurrency } from "@/lib/utils";
 import { deleteAlert } from "@/lib/actions/alert.actions";
 
 interface AlertsPanelProps {
-    alerts: any[];
+    alerts: { _id: string; symbol: string; targetPrice: number; condition: 'ABOVE' | 'BELOW'; createdAt: string; expiresAt: string; active: boolean; triggered: boolean }[];
     onRefresh?: () => void;
 }
 
@@ -51,11 +51,12 @@ export default function AlertsPanel({ alerts, onRefresh }: AlertsPanelProps) {
                                         Condition: Price {alert.condition.toLowerCase()} {formatCurrency(alert.targetPrice)}
                                     </div>
                                     <div className="text-[10px] text-gray-500 mt-1">
-                                        Active until {new Date(new Date(alert.createdAt).getTime() + 90 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                                        {alert.triggered ? 'Notification sent' : alert.active ? 'Pending' : 'Inactive'} · Expires {new Date(alert.expiresAt).toLocaleDateString()}
                                     </div>
                                 </div>
                                 <div className="flex flex-col space-y-2">
                                     <button
+                                        aria-label={`Delete alert for ${alert.symbol}`}
                                         onClick={() => handleDelete(alert._id)}
                                         className="text-gray-500 hover:text-red-500 transition-colors p-1"
                                     >

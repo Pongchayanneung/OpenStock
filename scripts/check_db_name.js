@@ -1,7 +1,8 @@
 
-const mongoose = require('mongoose');
-require('dotenv').config({ path: '.env' });
-const dns = require('dns');
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import dns from 'node:dns';
+dotenv.config({ path: '.env' });
 // FIX for connection
 if (dns.setDefaultResultOrder) dns.setDefaultResultOrder('ipv4first');
 

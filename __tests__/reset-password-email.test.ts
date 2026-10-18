@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/lib/nodemailer', () => ({
+vi.mock('@/lib/nodemailer', async importOriginal => ({
+    ...await importOriginal<typeof import('@/lib/nodemailer')>(),
     transporter: {
         sendMail: vi.fn(),
     },
@@ -11,7 +12,7 @@ import { sendPasswordResetEmail } from '@/lib/nodemailer/reset-password';
 
 describe('sendPasswordResetEmail', () => {
     const originalEnv = { ...process.env };
-    const sendMailMock = vi.mocked(transporter.sendMail);
+    const sendMailMock = vi.mocked(transporter!.sendMail);
 
     beforeEach(() => {
         process.env = {
